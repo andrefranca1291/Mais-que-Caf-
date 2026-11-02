@@ -40,7 +40,12 @@ def listar_clientes():
         """)
         clientes = cursor.fetchall()
 
-        return render_template("clientes.html", clientes=clientes)
+        return render_template(
+            "clientes.html",
+            clientes=clientes,
+            aviso=request.args.get("aviso"),
+            tipo_aviso=request.args.get("tipo", "sucesso")
+        )
 
     except Exception as erro:
         return f"Erro ao consultar clientes: {erro}", 500
@@ -356,18 +361,35 @@ def excluir_cliente(id_cliente):
         cursor.execute("DELETE FROM Cliente WHERE id_cliente = %s", (id_cliente,))
 
         if cursor.rowcount == 0:
-            return "Cliente não encontrado.", 404
+            return redirect(url_for(
+                "listar_clientes",
+                aviso="O cliente não foi encontrado.",
+                tipo="erro"
+            ))
 
         conexao.commit()
-        return redirect(url_for("listar_clientes"))
+        return redirect(url_for(
+            "listar_clientes",
+            aviso="Cliente excluído com sucesso.",
+            tipo="sucesso"
+        ))
 
-    except Exception:
+    except Exception as erro_banco:
         if conexao:
             conexao.rollback()
-        return (
-            "Não foi possível excluir este cliente. Verifique se ele possui pedidos vinculados.",
-            409
+        codigo_erro = (
+            getattr(erro_banco, "sqlstate", None)
+            or getattr(erro_banco, "pgcode", None)
         )
+        if codigo_erro == "23503":
+            mensagem = "Este cliente possui pedido(s) vinculado(s) e não pode ser excluído."
+        else:
+            mensagem = "Não foi possível excluir o cliente. Tente novamente."
+        return redirect(url_for(
+            "listar_clientes",
+            aviso=mensagem,
+            tipo="erro"
+        ))
     finally:
         if conexao:
             conexao.close()

@@ -17,6 +17,23 @@
             box-shadow: 0 4px 14px rgba(75, 46, 43, .12);
         }
         .pagina-clientes > p { margin: 12px 0 20px; }
+        .pagina-clientes .aviso {
+            margin: 16px 0;
+            padding: 14px 16px;
+            border: 1px solid;
+            border-radius: 7px;
+            font-weight: bold;
+        }
+        .pagina-clientes .aviso.sucesso {
+            border-color: #9AC6A5;
+            background: #EAF5EC;
+            color: #285B35;
+        }
+        .pagina-clientes .aviso.erro {
+            border-color: #D9A3A0;
+            background: #FBEDEC;
+            color: #8F332B;
+        }
         .pagina-clientes .acoes-cliente { white-space: nowrap; }
         .pagina-clientes .acoes-cliente form { display: inline; margin: 0; }
         .pagina-clientes .botao-acao {
@@ -44,6 +61,10 @@
     <main class="pagina-clientes">
         <h1>Clientes</h1>
         <p>Consulte os clientes cadastrados.</p>
+
+        {% if aviso %}
+            <div class="aviso {{ tipo_aviso }}" role="alert">{{ aviso }}</div>
+        {% endif %}
 
         {% if erro %}
             <p class="mensagem erro">{{ erro }}</p>
