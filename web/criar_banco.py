@@ -9,10 +9,13 @@ def criar_banco():
 
     conexao = conectar()
     try:
-        with conexao.cursor() as cursor:
+        cursor = conexao.cursor()
+        try:
             for comando in comandos_sql.split(";"):
                 if comando.strip():
                     cursor.execute(comando)
+        finally:
+            cursor.close()
         conexao.commit()
         print("Tabelas e relacionamentos criados com sucesso.")
     finally:
