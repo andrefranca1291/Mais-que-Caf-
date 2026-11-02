@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Clientes | Mais Que Café</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <main>
+        <h1>Clientes</h1>
+        <p>Consulte os clientes cadastrados.</p>
+
+        {% if erro %}
+            <p class="mensagem erro">{{ erro }}</p>
+        {% endif %}
+
+        <p>
+            <a href="{{ url_for('novo_cliente') }}">Novo cliente</a>
+        </p>
+
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nome</th>
+                    <th>E-mail</th>
+                    <th>Telefone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cliente in clientes %}
+                    <tr>
+                        <td>{{ cliente[0] }}</td>
+                        <td>{{ cliente[1] }}</td>
+                        <td>{{ cliente[2] }}</td>
+                        <td>{{ cliente[3] or "—" }}</td>
+                    </tr>
+                {% else %}
+                    <tr>
+                        <td colspan="4">Nenhum cliente cadastrado.</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </main>
+</body>
+</html>

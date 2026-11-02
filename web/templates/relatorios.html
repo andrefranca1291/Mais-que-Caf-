@@ -1,0 +1,120 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Relatórios - Mais Que Café</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Mais Que Café">
+        <h1>Relatórios</h1>
+    </header>
+
+    <nav>
+        <a href="{{ url_for('inicio') }}">Início</a>
+        <a href="{{ url_for('listar_clientes') }}">Clientes</a>
+        <a href="{{ url_for('listar_produtos') }}">Produtos</a>
+        <a href="{{ url_for('listar_pedidos') }}">Pedidos</a>
+        <a href="{{ url_for('relatorios') }}">Relatórios</a>
+    </nav>
+
+    <main class="conteudo">
+        <h2>Vendas por período</h2>
+
+        <form method="get" action="{{ url_for('relatorios') }}" class="filtros">
+            <label for="data_inicio">De:</label>
+            <input
+                type="date"
+                id="data_inicio"
+                name="data_inicio"
+                value="{{ data_inicio }}"
+                required
+            >
+
+            <label for="data_fim">Até:</label>
+            <input
+                type="date"
+                id="data_fim"
+                name="data_fim"
+                value="{{ data_fim }}"
+                required
+            >
+
+            <button type="submit">Gerar relatório</button>
+        </form>
+
+        {% if erro %}
+            <p class="mensagem-erro">Não foi possível gerar o relatório: {{ erro }}</p>
+        {% else %}
+            <section class="resumo">
+                <div>
+                    <strong>Pedidos</strong>
+                    <span>{{ quantidade_pedidos }}</span>
+                </div>
+                <div>
+                    <strong>Total de vendas</strong>
+                    <span>{{ total_vendas }}</span>
+                </div>
+                <div>
+                    <strong>Ticket médio</strong>
+                    <span>{{ ticket_medio }}</span>
+                </div>
+            </section>
+
+            <h2>Produtos mais vendidos</h2>
+
+            {% if top_produtos %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Código</th>
+                            <th>Produto</th>
+                            <th>Unidades vendidas</th>
+                            <th>Receita</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for produto in top_produtos %}
+                            <tr>
+                                <td>{{ produto[0] }}</td>
+                                <td>{{ produto[1] }}</td>
+                                <td>{{ produto[2] }}</td>
+                                <td>{{ formatar_moeda(produto[3]) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Não houve venda de produtos nesse período.</p>
+            {% endif %}
+
+            <h2>Vendas por dia</h2>
+
+            {% if vendas_diarias %}
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Data</th>
+                            <th>Quantidade de pedidos</th>
+                            <th>Vendas do dia</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for venda in vendas_diarias %}
+                            <tr>
+                                <td>{{ venda[0].strftime("%d/%m/%Y") }}</td>
+                                <td>{{ venda[1] }}</td>
+                                <td>{{ formatar_moeda(venda[2]) }}</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            {% else %}
+                <p>Não houve vendas nesse período.</p>
+            {% endif %}
+        {% endif %}
+    </main>
+</body>
+</html>

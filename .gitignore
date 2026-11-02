@@ -1,0 +1,24 @@
+# Publish only the web application and deployment documentation.
+/*
+!/.gitignore
+!/README.md
+!/ROTEIRO_TESTES.md
+!/requirements.txt
+!/.env.example
+!/web/
+!/web/**
+
+# Python and local configuration
+.venv/
+.venv-*/
+venv/
+__pycache__/
+*.py[cod]
+.env
+.env.*
+!.env.example
+
+# Ignore generated Python files within the web app
+/web/__pycache__/
+/web/**/__pycache__/
+

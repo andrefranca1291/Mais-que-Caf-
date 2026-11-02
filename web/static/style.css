@@ -1,0 +1,136 @@
+body {
+    margin: 0;
+    background: #F5EFE6;
+    color: #4B2E2B;
+    font-family: Arial, sans-serif;
+    text-align: center;
+}
+
+header {
+    padding: 30px 16px;
+}
+
+header img {
+    width: min(420px, 80%);
+    height: auto;
+}
+
+main {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 14px;
+    padding: 20px;
+}
+
+main a {
+    padding: 14px 24px;
+    border-radius: 6px;
+    background: #4B2E2B;
+    color: white;
+    text-decoration: none;
+    font-weight: bold;
+}
+
+main a:hover {
+    background: #E67E22;
+}
+
+nav {
+    display: flex;
+    justify-content: center;
+    gap: 12px;
+    padding: 10px;
+}
+
+nav a {
+    color: #4B2E2B;
+    font-weight: bold;
+    text-decoration: none;
+}
+
+nav a:hover {
+    color: #E67E22;
+}
+
+.conteudo {
+    max-width: 1000px;
+    margin: 20px auto;
+    padding: 20px;
+    text-align: left;
+}
+
+.conteudo h2 {
+    color: #4B2E2B;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #FFFCF8;
+}
+
+th,
+td {
+    border: 1px solid #D8C8B8;
+    padding: 12px;
+    text-align: left;
+}
+
+th {
+    background: #4B2E2B;
+    color: white;
+}
+
+tr:nth-child(even) {
+    background: #F5EFE6;
+}
+
+body.pagina-formulario {
+    min-height: 100vh;
+    margin: 0;
+    display: grid;
+    place-items: center;
+    background-color: #F5EFE6;
+}
+
+.formulario-centralizado {
+    box-sizing: border-box;
+    width: min(90%, 480px);
+    padding: 32px;
+    background-color: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 4px 14px rgba(75, 46, 43, 0.15);
+}
+
+.formulario-centralizado form {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.formulario-centralizado input {
+    box-sizing: border-box;
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #B9A69A;
+    border-radius: 6px;
+}
+
+.formulario-centralizado button {
+    margin-top: 12px;
+    padding: 12px;
+    color: #FFFFFF;
+    background-color: #4B2E2B;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.formulario-centralizado button:hover {
+    background-color: #E67E22;
+}
+
+.formulario-centralizado a {
+    text-align: center;
+}

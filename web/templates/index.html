@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="pt-br">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Mais Que Café</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <header>
+        <img src="{{ url_for('static', filename='logo.png') }}" alt="Mais Que Café">
+        <h1>Mais Que Café</h1>
+    </header>
+
+    <main>
+        <a href="/clientes">Clientes</a>
+        <a href="/produtos">Produtos</a>
+        <a href="/pedidos">Pedidos</a>
+        <a href="/relatorios">Relatórios</a>
+    </main>
+</body>
+</html>

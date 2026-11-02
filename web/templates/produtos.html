@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Produtos | Mais Que Café</title>
+
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            margin: 0;
+            padding: 32px;
+            background-color: #F5EFE6;
+            color: #4B2E2B;
+            font-family: Arial, sans-serif;
+        }
+
+        main {
+            width: min(100%, 1100px);
+            margin: 0 auto;
+            padding: 32px;
+            background-color: #FFFFFF;
+            border-radius: 12px;
+            box-shadow: 0 4px 14px rgba(75, 46, 43, 0.15);
+        }
+
+        .cabecalho {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        h1 {
+            margin: 0 0 8px;
+        }
+
+        .cabecalho p {
+            margin: 0;
+        }
+
+        .botao {
+            display: inline-block;
+            padding: 12px 18px;
+            border: none;
+            border-radius: 6px;
+            background-color: #4B2E2B;
+            color: #FFFFFF;
+            font-size: 16px;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .botao:hover {
+            background-color: #E67E22;
+        }
+
+        .tabela-container {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        th,
+        td {
+            padding: 12px;
+            border-bottom: 1px solid #D8C9BC;
+            text-align: left;
+        }
+
+        th {
+            background-color: #4B2E2B;
+            color: #FFFFFF;
+        }
+
+        tbody tr:hover {
+            background-color: #F5EFE6;
+        }
+
+        .voltar {
+            display: inline-block;
+            margin-top: 20px;
+            color: #4B2E2B;
+        }
+
+        .mensagem-erro {
+            padding: 10px;
+            border-radius: 6px;
+            background-color: #FDECEC;
+            color: #9B1C1C;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 16px;
+            }
+
+            main {
+                padding: 20px;
+            }
+
+            .cabecalho {
+                align-items: flex-start;
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <main>
+        <section class="cabecalho">
+            <div>
+                <h1>Produtos</h1>
+                <p>Consulte os produtos cadastrados.</p>
+            </div>
+
+            <a class="botao" href="{{ url_for('novo_produto') }}">
+                Novo produto
+            </a>
+        </section>
+
+        {% if erro %}
+            <p class="mensagem-erro">{{ erro }}</p>
+        {% endif %}
+
+        <div class="tabela-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Nome</th>
+                        <th>Descrição</th>
+                        <th>Preço</th>
+                        <th>Categoria</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for produto in produtos %}
+                        <tr>
+                            <td>{{ produto[0] }}</td>
+                            <td>{{ produto[1] }}</td>
+                            <td>{{ produto[2] or "—" }}</td>
+                            <td>R$ {{ "%.2f"|format(produto[3]) }}</td>
+                            <td>{{ produto[4] or "—" }}</td>
+                        </tr>
+                    {% else %}
+                        <tr>
+                            <td colspan="5">Nenhum produto cadastrado.</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <a class="voltar" href="{{ url_for('inicio') }}">Voltar ao menu</a>
+    </main>
+</body>
+</html>
