@@ -1,4 +1,5 @@
 import os
+import re
 from datetime import date, datetime, time, timedelta
 from decimal import Decimal, InvalidOperation
 
@@ -7,6 +8,14 @@ from flask import Flask, render_template, request, redirect, url_for
 from conexao import conectar
 
 app = Flask(__name__)
+
+def normalizar_telefone(telefone):
+    """Retorna somente os dígitos e remove o código do Brasil quando informado."""
+    digitos = re.sub(r"\D", "", telefone or "")
+    if digitos.startswith("55") and len(digitos) in (12, 13):
+        digitos = digitos[2:]
+    return digitos
+
 
 def formatar_moeda(valor):
     numero = f"{Decimal(str(valor or 0)):,.2f}"
@@ -214,6 +223,7 @@ def novo_cliente():
         email = request.form.get("email", "").strip()
         senha = request.form.get("senha", "")
         telefone = request.form.get("telefone", "").strip() or None
+        telefone_normalizado = normalizar_telefone(telefone)
 
         if not nome or not email or not senha:
             erro = "Preencha nome, e-mail e senha."
@@ -221,16 +231,34 @@ def novo_cliente():
             try:
                 conexao = conectar()
                 cursor = conexao.cursor()
-                cursor.execute(
-                    """
-                    INSERT INTO Cliente (nome, email, senha, telefone)
-                    VALUES (%s, %s, %s, %s)
-                    """,
-                    (nome, email, senha, telefone)
-                )
-                conexao.commit()
 
-                return redirect(url_for("listar_clientes"))
+                if telefone_normalizado:
+                    cursor.execute(
+                        """
+                        SELECT telefone
+                        FROM Cliente
+                        WHERE telefone IS NOT NULL
+                        """
+                    )
+                    telefones_existentes = cursor.fetchall()
+                    telefone_duplicado = any(
+                        normalizar_telefone(registro[0]) == telefone_normalizado
+                        for registro in telefones_existentes
+                    )
+
+                    if telefone_duplicado:
+                        erro = "Já existe um cliente cadastrado com esse telefone."
+
+                if erro is None:
+                    cursor.execute(
+                        """
+                        INSERT INTO Cliente (nome, email, senha, telefone)
+                        VALUES (%s, %s, %s, %s)
+                        """,
+                        (nome, email, senha, telefone)
+                    )
+                    conexao.commit()
+                    return redirect(url_for("listar_clientes"))
 
             except Exception as erro_banco:
                 if conexao:
