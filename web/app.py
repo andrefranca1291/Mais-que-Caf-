@@ -271,6 +271,107 @@ def novo_cliente():
 
     return render_template("cliente_form.html", erro=erro)
 
+
+@app.route("/clientes/<int:id_cliente>/editar", methods=["GET", "POST"])
+def editar_cliente(id_cliente):
+    conexao = None
+    erro = None
+    cliente = None
+
+    try:
+        conexao = conectar()
+        cursor = conexao.cursor()
+        cursor.execute(
+            """
+            SELECT id_cliente, nome, email, telefone
+            FROM Cliente
+            WHERE id_cliente = %s
+            """,
+            (id_cliente,)
+        )
+        cliente = cursor.fetchone()
+
+        if not cliente:
+            return "Cliente não encontrado.", 404
+
+        if request.method == "POST":
+            nome = request.form.get("nome", "").strip()
+            email = request.form.get("email", "").strip()
+            telefone = request.form.get("telefone", "").strip() or None
+            telefone_normalizado = normalizar_telefone(telefone)
+
+            if not nome or not email:
+                erro = "Preencha nome e e-mail."
+            elif telefone_normalizado:
+                cursor.execute(
+                    """
+                    SELECT id_cliente, telefone
+                    FROM Cliente
+                    WHERE telefone IS NOT NULL AND id_cliente <> %s
+                    """,
+                    (id_cliente,)
+                )
+                telefones_existentes = cursor.fetchall()
+                if any(
+                    normalizar_telefone(registro[1]) == telefone_normalizado
+                    for registro in telefones_existentes
+                ):
+                    erro = "Já existe outro cliente cadastrado com esse telefone."
+
+            if erro is None:
+                cursor.execute(
+                    """
+                    UPDATE Cliente
+                    SET nome = %s, email = %s, telefone = %s
+                    WHERE id_cliente = %s
+                    """,
+                    (nome, email, telefone, id_cliente)
+                )
+                conexao.commit()
+                return redirect(url_for("listar_clientes"))
+
+            cliente = (id_cliente, nome, email, telefone)
+
+    except Exception as erro_banco:
+        if conexao:
+            conexao.rollback()
+        erro = f"Não foi possível atualizar o cliente: {erro_banco}"
+    finally:
+        if conexao:
+            conexao.close()
+
+    if cliente is None:
+        return f"Erro ao abrir a edição do cliente: {erro}", 500
+
+    return render_template("cliente_editar.html", cliente=cliente, erro=erro)
+
+
+@app.route("/clientes/<int:id_cliente>/excluir", methods=["POST"])
+def excluir_cliente(id_cliente):
+    conexao = None
+
+    try:
+        conexao = conectar()
+        cursor = conexao.cursor()
+        cursor.execute("DELETE FROM Cliente WHERE id_cliente = %s", (id_cliente,))
+
+        if cursor.rowcount == 0:
+            return "Cliente não encontrado.", 404
+
+        conexao.commit()
+        return redirect(url_for("listar_clientes"))
+
+    except Exception:
+        if conexao:
+            conexao.rollback()
+        return (
+            "Não foi possível excluir este cliente. Verifique se ele possui pedidos vinculados.",
+            409
+        )
+    finally:
+        if conexao:
+            conexao.close()
+
 @app.route("/produtos/novo", methods=["GET", "POST"])
 def novo_produto():
     erro = None

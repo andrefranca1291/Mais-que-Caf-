@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Editar cliente | Mais Que Café</title>
+    <style>
+        * { box-sizing: border-box; }
+        body {
+            min-height: 100vh; margin: 0; padding: 24px; display: grid;
+            place-items: center; background: #F5EFE6; color: #4B2E2B;
+            font-family: Arial, sans-serif;
+        }
+        main {
+            width: min(100%, 480px); padding: 32px; background: #FFF;
+            border-radius: 12px; box-shadow: 0 4px 14px rgba(75, 46, 43, .15);
+        }
+        h1, main > p { text-align: center; }
+        h1 { margin-top: 0; }
+        form { display: flex; flex-direction: column; gap: 10px; }
+        label { margin-top: 6px; font-weight: bold; }
+        input {
+            width: 100%; padding: 11px; border: 1px solid #B9A69A;
+            border-radius: 6px; font-size: 16px;
+        }
+        button, .cancelar {
+            display: block; margin-top: 14px; padding: 12px; border: 0;
+            border-radius: 6px; text-align: center; font-size: 16px;
+            text-decoration: none; cursor: pointer;
+        }
+        button { background: #4B2E2B; color: #FFF; }
+        button:hover { background: #E67E22; }
+        .cancelar { margin-top: 0; color: #4B2E2B; }
+        .mensagem-erro { padding: 10px; border-radius: 6px; background: #FDECEC; color: #9B1C1C; }
+    </style>
+</head>
+<body>
+    <main>
+        <h1>Editar cliente</h1>
+        <p>Altere os dados e salve as mudanças.</p>
+        {% if erro %}<p class="mensagem-erro">{{ erro }}</p>{% endif %}
+        <form method="post">
+            <label for="nome">Nome</label>
+            <input id="nome" name="nome" type="text" maxlength="100" value="{{ cliente[1] }}" required>
+
+            <label for="email">E-mail</label>
+            <input id="email" name="email" type="email" maxlength="100" value="{{ cliente[2] }}" required>
+
+            <label for="telefone">Telefone</label>
+            <input id="telefone" name="telefone" type="text" maxlength="20" value="{{ cliente[3] or '' }}">
+
+            <button type="submit">Salvar alterações</button>
+            <a class="cancelar" href="{{ url_for('listar_clientes') }}">Cancelar</a>
+        </form>
+    </main>
+</body>
+</html>
