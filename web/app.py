@@ -384,7 +384,11 @@ def excluir_cliente(id_cliente):
         if codigo_erro == "23503":
             mensagem = "Este cliente possui pedido(s) vinculado(s) e não pode ser excluído."
         else:
+<<<<<<< HEAD
             mensagem = "Não foi possível excluir o cliente. Cliente possui histórico de pedidos."
+=======
+            mensagem = "Não foi possível excluir o cliente. Tente novamente."
+>>>>>>> 7fc41788179cbae0a652319db0259ae34e76ae5e
         return redirect(url_for(
             "listar_clientes",
             aviso=mensagem,
